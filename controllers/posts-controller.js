@@ -1,10 +1,6 @@
 const { v4: uuidv4 } = require('uuid');
 
 const HttpError = require("../models/http-error")
-const dataManager = require("../utils/data_manager")
-
-let auth = false;
-let allowed = true;
 
 const DUMY_USERS = [
     {
@@ -33,48 +29,43 @@ const DUMY_USERS = [
     }
 ]
 
-const DUMY_MESSAGES = [
+const DUMY_POSTS = [
     {
         id: 1,
         created_by: 1,
-        created_for: 2,
         creation_date: '2020-01-01',
-        text: "message1"
+        text: "bla bla"
     },
     {
         id: 2,
         created_by: 2,
-        created_for: 1,
         creation_date: '2020-01-01',
-        text: "message2"
+        text: "blop blip"
     },
     {
         id: 3,
         created_by: 3,
-        created_for: 1,
         creation_date: '2020-01-01',
-        text: "message3"
+        text: "pim pum"
     }
 ]
 
-const login = (req, res, next) => {
-    console.log('POST request in user.login');
-    const { email, password } = req.body;
-
-    if(DUMY_USERS.find(user => user.email === email && user.password === password)) {
-        auth = true;
-    }
-
+const getAllPosts = (req, res, next) => {
+    console.log('GET getAllPosts');
+    
     if(!auth) {
         return next(new HttpError("user not authorized", 401));
     }
-    res.json({auth: "true"});
+    if(!allowed) {
+        return next(new HttpError("action is forbidden", 403));
+    }
+
+    res.json(DUMY_POSTS);
 }
 
-const newPost = (req, res, next) => {
+const deletePostById = (req, res, next) => {
     console.log('POST request in user.<id>.post');
-    const userId = req.params.uid;
-    const text = req.body.text;
+    const postId = req.params.postId;
 
     if(!auth) {
         return next(new HttpError("user not authorized", 401));
@@ -83,22 +74,8 @@ const newPost = (req, res, next) => {
         return next(new HttpError("action is forbidden", 403));
     }
 
-    const postId = uuidv4();
-    console.log('saving data');
-    dataManager.saveData("posts", {uId: userId, pId: postId, txt: text})
-    console.log('saved data');
-    res.json({pId: postId});
-
+    res.json({Message: "deleted postId " + postId});
 }
 
-const sendMessageToUser = (req, res, next) => {
-    console.log('POST sendMessageToUser');
-
-    const { from, to, message } = req.body;
-
-    res.json({Result: `Ive sent ${message} from ${from} to ${to}`});
-}
-
-exports.login = login;
-exports.newPost = newPost;
-exports.sendMessageToUser = sendMessageToUser;
+exports.getAllPosts = getAllPosts;
+exports.deletePostById = deletePostById;
