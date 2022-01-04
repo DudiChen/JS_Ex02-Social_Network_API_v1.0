@@ -6,40 +6,45 @@ const dataManager = require("../utils/data_manager");
 let auth = false;
 let allowed = true;
 
-const DUMY_USERS = [
-    {
-        id: uuidv4(),
-        email: 'dudi@cool.com',
-        password: 'passw0rd',
-        fullname: "dudi dudi",
-        date_created: "2020-01-01",
-        status: 'created'
-    }, 
-    {
-        id: uuidv4(),
-        email: 'alex@yes.com',
-        password: 'asdf1234',
-        fullname: "alex alex",
-        date_created: "2020-01-01",
-        status: 'created'
-    }, 
-    {
-        id: uuidv4(),
-        email: 'yanki@samim.com',
-        password: '1111',
-        fullname: "yanki dudi",
-        date_created: "2020-01-01",
-        status: 'created'
-    }
-]
+// const DUMY_USERS = [
+//     {
+//         id: uuidv4(),
+//         email: 'dudi@cool.com',
+//         password: 'passw0rd',
+//         fullname: "dudi dudi",
+//         date_created: "2020-01-01",
+//         status: 'created'
+//     }, 
+//     {
+//         id: uuidv4(),
+//         email: 'alex@yes.com',
+//         password: 'asdf1234',
+//         fullname: "alex alex",
+//         date_created: "2020-01-01",
+//         status: 'created'
+//     }, 
+//     {
+//         id: uuidv4(),
+//         email: 'yanki@samim.com',
+//         password: '1111',
+//         fullname: "yanki dudi",
+//         date_created: "2020-01-01",
+//         status: 'created'
+//     }
+// ]
 
 const login = (req, res, next) => {
     console.log('POST request in user.login');
     const { email, password } = req.body;
 
-    if(DUMY_USERS.find(user => user.email === email && user.password === password)) {
-        auth = true;
+    // if(DUMY_USERS.find(user => user.email === email && user.password === password)) {
+    //     auth = true;
+    // }
+
+    if(dataManager.getData("users").find(user => user.email === email && user.password === password)) {
+            auth = true;
     }
+    
 
     if(!auth) {
         return next(new HttpError("user not authorized", 401));
@@ -48,7 +53,7 @@ const login = (req, res, next) => {
 }
 
 const newPost = (req, res, next) => {
-    console.log('POST request in user.<id>.post');
+    console.log('POST newPost');
     const userId = req.params.uid;
     const text = req.body.text;
 

@@ -14,11 +14,12 @@ app.use(usersRoutes);
 app.use(postsRoutes);
 app.use(adminRoutes);
 
-
+// unknown routes middleware
 app.use((req, res, next) => {
     return next(new HttpError('Could not find this route', 404));
 })
 
+// errors midleware
 app.use((error, req, res, next) => {
     if(res.headerSendt) {
         return next(error);

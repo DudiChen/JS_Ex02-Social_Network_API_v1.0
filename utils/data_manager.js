@@ -14,6 +14,7 @@ const saveData = (db_name, newData) => {
     let dataArr = getData(db_name);
     let id = dataArr.length === 0 ? 1 : dataArr[dataArr.length - 1].id + 1
     dataArr.push({id: id ,...newData});
+    
     fs.writeFile(DB_NAMES_DIC[db_name], JSON.stringify(dataArr), (err) => {
         if(err) {
             throw err;
@@ -21,6 +22,8 @@ const saveData = (db_name, newData) => {
 
         console.log("data saved");
     })
+
+    return id;
 }
 
 const getData = (db_name) => {
@@ -38,7 +41,6 @@ const getData = (db_name) => {
     }
 
     return dataArr;
-
 }
 
 const deleteData = (db_name, id) => {
@@ -66,7 +68,7 @@ const deleteData = (db_name, id) => {
 
 const updateData = (db_name, id, key, value) => {
     let dataArr = getData(db_name);
-    
+
     dataArr.filter(data => data.id === id).forEach(data => { data[key] = value});
 
     fs.writeFile(DB_NAMES_DIC[db_name], JSON.stringify(dataArr), (err) => {
