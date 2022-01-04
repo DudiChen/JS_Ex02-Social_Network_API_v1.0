@@ -1,0 +1,1 @@
+[{"id":1,"email":"dudi@lama.mama","password":"sababa","fullName":"Dudi Sababalo","creationDate":"Tue Jan 04 2022","status":"created"},{"id":2,"email":"dudi@lama.mama","password":"sababa","fullName":"Dudi Sababalo","creationDate":"Tue Jan 04 2022","status":"created"}]

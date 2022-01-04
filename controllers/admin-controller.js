@@ -1,111 +1,79 @@
-const { v4: uuidv4 } = require('uuid');
-
-const HttpError = require("../models/http-error")
-
-const DUMY_USERS = [
-    {
-        id: uuidv4(),
-        email: 'dudi@cool.com',
-        password: 'passw0rd',
-        fullname: "dudi dudi",
-        date_created: "2020-01-01",
-        status: 'created'
-    }, 
-    {
-        id: uuidv4(),
-        email: 'alex@yes.com',
-        password: 'asdf1234',
-        fullname: "alex alex",
-        date_created: "2020-01-01",
-        status: 'created'
-    }, 
-    {
-        id: uuidv4(),
-        email: 'yanki@samim.com',
-        password: '1111',
-        fullname: "yanki dudi",
-        date_created: "2020-01-01",
-        status: 'created'
-    }
-]
+const HttpError = require("../models/http-error");
+const dataManager = require("../utils/data_manager");
 
 const getAllUsers = (req, res, next) => {
     console.log('GET getAllUsers');
 
-    res.json(DUMY_USERS);
+    const users = dataManager.getData("users")
+    res.json(users);
 }
 
 const approveJoinRequest = (req, res, next) => {
     console.log('POST approveJoinRequest');
-    const { email, password } = req.body;
+    const { email, password, fullName } = req.body;
 
-    res.json({Message: "test post of user id " + userId});
+    dataManager.saveData("users", 
+    {
+        email: email, 
+        password: password, 
+        fullName: fullName, 
+        creationDate: (new Date()).toDateString(), 
+        status: "created"
+    })
+
+    res.json({Message: "Created new user id: TBD"});
 
 }
 
 const suspendUser = (req, res, next) => {
-    console.log('POST request in user.<id>.post');
-    const userId = req.params.id;
-    if(!auth) {
-        return next(new HttpError("user not authorized", 401));
-    }
-    if(!allowed) {
-        return next(new HttpError("action is forbidden", 403));
-    }
-    res.json({Message: "test post of user id " + userId});
+    console.log('POST suspending user');
+    const userId = req.body.id;
+    
+    dataManager.updateData("users", userId, "status", "suspended")
 
+    res.json({Message: "suspended user " + userId});
 }
 
 const deleteUser = (req, res, next) => {
-    console.log('POST request in user.<id>.post');
-    const userId = req.params.id;
-    if(!auth) {
-        return next(new HttpError("user not authorized", 401));
-    }
-    if(!allowed) {
-        return next(new HttpError("action is forbidden", 403));
-    }
-    res.json({Message: "test post of user id " + userId});
+    console.log('POST deleting user');
+    const userId = req.body.id;
+    
+    dataManager.updateData("users", userId, "status", "deleted")
+
+    res.json({Message: "suspended user " + userId});
 
 }
 
 const restoreSuspendedUser = (req, res, next) => {
-    console.log('POST request in user.<id>.post');
-    const userId = req.params.id;
-    if(!auth) {
-        return next(new HttpError("user not authorized", 401));
+    console.log('POST suspending user');
+    
+    const userId = req.body.id;
+    const users = dataManager.getData("users");
+    const selectedUser = users.filter(user => user.id === userId);
+    
+    if(selectedUser[0].status != "deleted") {
+        dataManager.updateData("users", userId, "status", "active")
+        res.json({Message: `restored user ${userId}`});
     }
-    if(!allowed) {
-        return next(new HttpError("action is forbidden", 403));
+    else {
+        res.json({Message: `cannot restored user ${userId}. He's deleted`});
     }
-    res.json({Message: "test post of user id " + userId});
-
 }
 
 const sendMessageToAllUsers = (req, res, next) => {
-    console.log('POST request in user.<id>.post');
-    const userId = req.params.id;
-    if(!auth) {
-        return next(new HttpError("user not authorized", 401));
-    }
-    if(!allowed) {
-        return next(new HttpError("action is forbidden", 403));
-    }
-    res.json({Message: "test post of user id " + userId});
+    console.log('POST sendMessageToUser');
 
-}
+    const message = req.body.message;
 
-const deletePost = (req, res, next) => {
-    console.log('POST request in user.<id>.post');
-    const userId = req.params.id;
-    if(!auth) {
-        return next(new HttpError("user not authorized", 401));
-    }
-    if(!allowed) {
-        return next(new HttpError("action is forbidden", 403));
-    }
-    res.json({Message: "test post of user id " + userId});
+    dataManager.saveData("messages", {from: "admin", to: "*", message: message});
+
+    res.json({Result: `I've messaged ${message} to everyone`});
 
 }
 
 exports.getAllUsers = getAllUsers;
+exports.approveJoinRequest = approveJoinRequest;
+exports.suspendUser = suspendUser;
+exports.deleteUser = deleteUser;
+exports.restoreSuspendedUser = restoreSuspendedUser;
+exports.sendMessageToAllUsers = sendMessageToAllUsers;

@@ -1,3 +1,1 @@
-{"uId":"71","pId":"422bc2c5-1ad1-4424-ae3f-a3ef2403f82e","txt":"first post"},
-{"uId":"72","pId":"cde0f06c-4769-44be-b980-d43592f2ddab","txt":"second post"},
-{"uId":"72","pId":"c136be0b-f4a4-4d47-9d89-8aec58a96b34","txt":"yay post"},
+[{"id":1,"uId":"72","pId":"17605ae3-63cb-4c25-9420-a1af5d5aabce","txt":"first post"},{"id":2,"uId":"72","pId":"7d80386b-454b-45b8-8b1c-78482825115f","txt":"second post"},{"id":4,"uId":"72","pId":"e8b219ad-0f22-4ec2-bfdc-96918a3bd635","txt":"fourth post"},{"id":5,"uId":"72","pId":"e568a615-7613-4a2c-836d-44eec1cf76fb","txt":"fourth post"},{"id":6,"uId":"72","pId":"b2d3a315-8d36-4f7a-9dfa-3531e399d332","txt":"fourth post"}]
