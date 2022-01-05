@@ -1,4 +1,5 @@
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 
 const HttpError = require("../models/http-error");
 const dataManager = require("../utils/data_manager");
@@ -52,6 +53,33 @@ const login = (req, res, next) => {
     res.json({auth: "true"});
 }
 
+const signup = async (req, res, next) => {
+    console.log('POST signup');
+    const { email, password, fullName } = req.body;
+
+    let hashedPassword;
+    try {
+        hashedPassword = await bcrypt.hash(password, 12);
+    } catch (err) {
+        const error = new HttpError(
+        'Could not create user, please try again.',
+        500
+        );
+        return next(error);
+    }
+
+    dataManager.saveData("users", 
+    {
+        email: email, 
+        password: hashedPassword, 
+        fullName: fullName, 
+        creationDate: (new Date()).toDateString(), 
+        status: "created"
+    })
+
+    res.json({Message: "Created new user id: TBD"});
+}
+
 const newPost = (req, res, next) => {
     console.log('POST newPost');
     const userId = req.params.uid;
@@ -82,3 +110,4 @@ const sendMessageToUser = (req, res, next) => {
 exports.login = login;
 exports.newPost = newPost;
 exports.sendMessageToUser = sendMessageToUser;
+exports.signup = signup;
