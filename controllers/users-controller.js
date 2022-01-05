@@ -73,7 +73,7 @@ const signup = async (req, res, next) => {
         email: email, 
         password: hashedPassword, 
         fullName: fullName, 
-        creationDate: (new Date()).toDateString(), 
+        creationDate: new Date().toLocaleString(), 
         status: "created"
     })
 
@@ -84,6 +84,7 @@ const newPost = (req, res, next) => {
     console.log('POST newPost');
     const userId = req.params.uid;
     const text = req.body.text;
+    const date = new Date().toLocaleString();
 
     if(!auth) {
         return next(new HttpError("user not authorized", 401));
@@ -92,7 +93,7 @@ const newPost = (req, res, next) => {
         return next(new HttpError("action is forbidden", 403));
     }
 
-    dataManager.saveData("posts", {uId: userId, txt: text});
+    dataManager.saveData("posts", {uId: userId, date: date, txt: text});
     res.json({pId: postId});
 
 }
@@ -111,7 +112,7 @@ const getAllMessages = (req, res, next) => {
     console.log('GET getAllMessages');
     const { id } = req.body;
 
-    const userMessagesData = dataManager.getData("messages").filter((message) => message.to === id);
+    const userMessagesData = dataManager.getData("messages").filter((message) => message.to === id || message.to === '*');
     // TODO: remove line:
     console.log(userMessagesData);
     res.json(userMessagesData);

@@ -86,7 +86,7 @@ const init = () => {
         email: "admin", 
         password: "admin", 
         fullName: "admin", 
-        creationDate: (new Date()).toDateString(), 
+        creationDate: new Date().toLocaleString(), 
         status: "active"
     })
 }
