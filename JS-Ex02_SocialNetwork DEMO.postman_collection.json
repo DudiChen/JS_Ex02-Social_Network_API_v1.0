@@ -1,122 +1,38 @@
 {
 	"info": {
-		"_postman_id": "1dd8cd28-0778-46df-9b37-b78e51cbfd52",
-		"name": "TCPClient",
+		"_postman_id": "5e5d0fae-1d3d-4ea6-97a8-05f797b56688",
+		"name": "JS-Ex02_SocialNetwork DEMO",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "GetClient",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": ""
-				}
-			},
-			"response": [
+			"name": "Admin Login - SUCCESS",
+			"event": [
 				{
-					"name": "GetClient",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "html"
-								}
-							}
-						},
-						"url": {
-							"raw": "127.0.0.1:25015/Client?id=1",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "25015",
-							"path": [
-								"Client"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": [
-						{
-							"key": " Content-Type",
-							"value": "text/html; charset=utf-8  <!DOCTYPE html> <html lang=\"en\"> <head> <meta charset = \"utf-8\"> <title>A simple webpage</title> </head> <body> <h1>Simple HTML5 webpage</h1> <p>Hello, world!</p> </body> </html>"
-						}
-					],
-					"cookie": [],
-					"body": null
-				},
-				{
-					"name": "GetClient",
-					"originalRequest": {
-						"method": "GET",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "",
-							"options": {
-								"raw": {
-									"language": "html"
-								}
-							}
-						},
-						"url": {
-							"raw": "127.0.0.1:25015/Client?id=1",
-							"host": [
-								"127",
-								"0",
-								"0",
-								"1"
-							],
-							"port": "25015",
-							"path": [
-								"Client"
-							],
-							"query": [
-								{
-									"key": "id",
-									"value": "1"
-								}
-							]
-						}
-					},
-					"status": "OK",
-					"code": 200,
-					"_postman_previewlanguage": null,
-					"header": [
-						{
-							"key": "Content-Type",
-							"value": "text/html; charset=utf-8"
-						}
-					],
-					"cookie": [],
-					"body": null
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Admin Login - 200-OK\", () => {\r",
+							"    const { data } = pm.response.json()\r",
+							"    pm.collectionVariables.set(\"admin_id\", data.userId);\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// pm.test(\"Admin Login - access_token\", () => {\r",
+							"//     const { data } = pm.response.json();\r",
+							"//     return 'access_token' in data;\r",
+							"// });"
+						],
+						"type": "text/javascript"
+					}
 				}
-			]
-		},
-		{
-			"name": "missionTest",
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"agent\": \"Smith2\",\r\n    \"country\": \"Matrix\",\r\n    \"address\": \"IPCONFIG\",\r\n    \"date\": \"today\"\r\n}",
+					"raw": "{\r\n    \"email\": {{admin_email}},\r\n    \"password\": {{admin_password}}\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -124,28 +40,41 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:54945/api/mission",
-					"protocol": "http",
+					"raw": "{{server_path}}/user/login",
 					"host": [
-						"localhost"
+						"{{server_path}}"
 					],
-					"port": "54945",
 					"path": [
-						"api",
-						"mission"
+						"user",
+						"login"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "New User SignUp - user1 - SUCCESS",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"user1 SignUp - 200-OK\", () => {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"// What else should we varify? id??? [DUDI: I think we shouldn't return access_token here]"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"target-location\": \"IPCONFIG, Matrix\"\r\n}",
+					"raw": "{\r\n    \"email\": {{user1_email}},\r\n    \"password\": {{user1_password}},\r\n    \"fullName\": {{user1_fullname}}\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -153,40 +82,66 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:54945/api/FindClosest",
+					"raw": "http://localhost:5000/user/signup",
 					"protocol": "http",
 					"host": [
 						"localhost"
 					],
-					"port": "54945",
+					"port": "5000",
 					"path": [
-						"api",
-						"FindClosest"
+						"user",
+						"signup"
 					]
 				}
 			},
 			"response": []
 		},
 		{
-			"name": "New Request",
+			"name": "\"Created\" User Login (Before Admin Approval) - user1 - FAIL",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"user1 Login before approval - Unauthorized\", () => {\r",
+							"    const { data } = pm.response.json()\r",
+							"    pm.collectionVariables.set(\"user1_id\", data.userId);\r",
+							"    pm.response.to.have.status(401);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
-				"url": null
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"email\": {{user1_email}},\r\n    \"password\": {{user1_password}}\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:5000/user/login",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "5000",
+					"path": [
+						"user",
+						"login"
+					]
+				}
 			},
 			"response": []
 		},
 		{
-			"name": "BulkPurchases",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": null
-			},
-			"response": []
-		},
-		{
-			"name": "login",
+			"name": "login Copy 3",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -344,6 +299,76 @@
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "server_path",
+			"value": "http://localhost:5000"
+		},
+		{
+			"key": "admin_email",
+			"value": "\"admin\""
+		},
+		{
+			"key": "admin_password",
+			"value": "\"admin\""
+		},
+		{
+			"key": "user1_email",
+			"value": "\"user1@mama.com\""
+		},
+		{
+			"key": "user1_password",
+			"value": "\"user111\""
+		},
+		{
+			"key": "user2_email",
+			"value": "\"user1@mama.com\""
+		},
+		{
+			"key": "user2_password",
+			"value": "\"user222\""
+		},
+		{
+			"key": "user3_email",
+			"value": "\"user2@mama.com\""
+		},
+		{
+			"key": "user3_password",
+			"value": "'user333\""
+		},
+		{
+			"key": "user1_fullname",
+			"value": "\"user1\""
+		},
+		{
+			"key": "user2_fullname",
+			"value": "\"user2\""
+		},
+		{
+			"key": "user3_fullname",
+			"value": "\"user3\""
 		}
 	]
 }
