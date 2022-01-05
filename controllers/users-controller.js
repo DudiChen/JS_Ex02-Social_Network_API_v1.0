@@ -107,7 +107,18 @@ const sendMessageToUser = (req, res, next) => {
     res.json({Result: `Ive sent ${message} from ${from} to ${to}`});
 }
 
+const getAllMessages = (req, res, next) => {
+    console.log('GET getAllMessages');
+    const { id } = req.body;
+
+    const userMessagesData = dataManager.getData("messages").filter((message) => message.to === id);
+    // TODO: remove line:
+    console.log(userMessagesData);
+    res.json(userMessagesData);
+}
+
 exports.login = login;
 exports.newPost = newPost;
 exports.sendMessageToUser = sendMessageToUser;
 exports.signup = signup;
+exports.getAllMessages = getAllMessages;
