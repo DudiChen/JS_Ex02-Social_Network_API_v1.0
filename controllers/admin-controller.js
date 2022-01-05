@@ -22,7 +22,6 @@ const approveJoinRequest = (req, res, next) => {
     })
 
     res.json({Message: "Created new user id: TBD"});
-
 }
 
 const suspendUser = (req, res, next) => {
