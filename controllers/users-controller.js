@@ -42,7 +42,7 @@ const login = async (req, res, next) => {
     //     auth = true;
     // }
     let existingUser;
-    existingUser = dataManager.getData("users").find(user => user.email === email)
+    existingUser = dataManager.getData("users").find(user => user.email === email && user.status === "active");
     
 
     if(!existingUser) {
