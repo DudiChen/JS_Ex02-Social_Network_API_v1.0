@@ -21,7 +21,7 @@ const deletePostById = (req, res, next) => {
         res.json({Message: "deleted postId " + postId});
     }
     else {
-        const message;
+        let message;
         if (!post) {
             message = `post by id ${postId} not found`
             return next(new HttpError(message, 400));
