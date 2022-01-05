@@ -34,23 +34,34 @@ let allowed = true;
 //     }
 // ]
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     console.log('POST request in user.login');
     const { email, password } = req.body;
 
     // if(DUMY_USERS.find(user => user.email === email && user.password === password)) {
     //     auth = true;
     // }
-
-    if(dataManager.getData("users").find(user => user.email === email && user.password === password)) {
-            auth = true;
-    }
+    let existingUser;
+    existingUser = dataManager.getData("users").find(user => user.email === email)
     
 
-    if(!auth) {
-        return next(new HttpError("user not authorized", 401));
+    if(!existingUser) {
+        return next(new HttpError("wrong credentials", 401));
     }
-    res.json({auth: "true"});
+
+    try {
+        auth = await bcrypt.compare(password, existingUser.password)
+    }
+    catch {
+        return next(new HttpError("could not login. please try again", 500));
+    }
+    
+    if(auth) {
+        res.json({userId: existingUser.id});
+    }
+    else {
+        return next(new HttpError("wrong credentials", 401));
+    }
 }
 
 const signup = async (req, res, next) => {
@@ -103,10 +114,47 @@ const sendMessageToUser = (req, res, next) => {
 
     const { from, to, message } = req.body;
 
-    dataManager.saveData("messages", {from: from, to: to, message: message});
+    const users = dataManager.getData("users");
+    if(users.find(user => user.status === "active" && user.id === to)) {
+        dataManager.saveData("messages", {from: from, to: to, message: message});
+        res.json({Result: `Ive sent ${message} from ${from} to ${to}`});
+    }
+    else {
+        return next(new HttpError("recipient not found", 400));
+    }
 
-    res.json({Result: `Ive sent ${message} from ${from} to ${to}`});
 }
+
+const getAllUsers = (req, res, next) => {
+    console.log('GET getAllUsers');
+
+    const users = dataManager.getData("users").filter(users => users.status === "active").maps(user => {
+        delete user.email;
+        delete user.password;
+        delete user.creationDate;
+        delete user.status;
+        return user
+    })
+    res.json(users);
+}
+
+
+
+const getUser = (req, res, next) => {
+    console.log('GET getAllUsers');
+
+    const userId = req.body.id;
+    const users = dataManager.getData("users");
+    const selectedUser = users.filter(user => user.id === userId)[0];
+
+    if(selectedUser) {
+        res.json(selectedUser);
+    }
+    else {
+        return next(new HttpError(`user id ${userId} not found`, 400));
+    }
+}
+
 
 const getAllMessages = (req, res, next) => {
     console.log('GET getAllMessages');
@@ -122,4 +170,6 @@ exports.login = login;
 exports.newPost = newPost;
 exports.sendMessageToUser = sendMessageToUser;
 exports.signup = signup;
+exports.getAllUsers = getAllUsers;
+exports.getUser = getUser;
 exports.getAllMessages = getAllMessages;
