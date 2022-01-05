@@ -105,7 +105,7 @@ const signup = async (req, res, next) => {
 
     if(existingUser) {
         res.json({
-            newId: "Created new user",
+            message: "Created new user",
             userId: existingUser.id
         });
     }

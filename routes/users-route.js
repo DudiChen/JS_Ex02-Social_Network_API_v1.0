@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/user/login', usersController.login);
 router.post('/user/:uid/post', usersController.newPost);
 router.post('/user/send-message', usersController.sendMessageToUser);
-router.get('/user/my-messages', usersController.getAllMessages);
+router.post('/user/my-messages', usersController.getAllMessages);
 router.post('/user/signup', usersController.signup);
 router.post('/user/get-user', usersController.getUser);
 router.get('/user/get-all-users', usersController.getAllUsers);
