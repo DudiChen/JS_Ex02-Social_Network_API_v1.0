@@ -102,9 +102,15 @@ const sendMessageToUser = (req, res, next) => {
 
     const { from, to, message } = req.body;
 
-    dataManager.saveData("messages", {from: from, to: to, message: message});
+    const users = dataManager.getData("users");
+    if(users.find(user => user.status === "active" && user.id === to)) {
+        dataManager.saveData("messages", {from: from, to: to, message: message});
+        res.json({Result: `Ive sent ${message} from ${from} to ${to}`});
+    }
+    else {
+        return next(new HttpError("recipient not found", 400));
+    }
 
-    res.json({Result: `Ive sent ${message} from ${from} to ${to}`});
 }
 
 const getAllUsers = (req, res, next) => {
