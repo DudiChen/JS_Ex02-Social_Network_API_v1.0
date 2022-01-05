@@ -68,6 +68,18 @@ const signup = async (req, res, next) => {
     console.log('POST signup');
     const { email, password, fullName } = req.body;
 
+    let userExists;
+    userExists = dataManager.getData("users").find(user => user.email === email);
+
+    if(userExists) {
+        const error = new HttpError(
+            'please use a different email.',
+            401
+            );
+        
+        return next(error);
+    }
+
     let hashedPassword;
     try {
         hashedPassword = await bcrypt.hash(password, 12);
@@ -88,7 +100,24 @@ const signup = async (req, res, next) => {
         status: "created"
     })
 
-    res.json({Message: "Created new user id: TBD"});
+    let existingUser;
+    existingUser = dataManager.getData("users").find(user => user.email === email);
+
+    if(existingUser) {
+        res.json({
+            newId: "Created new user",
+            userId: existingUser.id
+        });
+    }
+    else {
+        const error = new HttpError(
+            'Could not create user, please try again.',
+            500
+            );
+        
+        return next(error);
+    }
+
 }
 
 const newPost = (req, res, next) => {
