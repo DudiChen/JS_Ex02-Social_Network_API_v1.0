@@ -107,7 +107,40 @@ const sendMessageToUser = (req, res, next) => {
     res.json({Result: `Ive sent ${message} from ${from} to ${to}`});
 }
 
+const getAllUsers = (req, res, next) => {
+    console.log('GET getAllUsers');
+
+    const users = dataManager.getData("users").filter(users => users.status === "active").maps(user => {
+        delete user.email;
+        delete user.password;
+        delete user.creationDate;
+        delete user.status;
+        return user
+    })
+    res.json(users);
+}
+
+
+
+const getUser = (req, res, next) => {
+    console.log('GET getAllUsers');
+
+    const userId = req.body.id;
+    const users = dataManager.getData("users");
+    const selectedUser = users.filter(user => user.id === userId)[0];
+
+    if(selectedUser) {
+        res.json(selectedUser);
+    }
+    else {
+        return next(new HttpError(`user id ${userId} not found`, 400));
+    }
+}
+
+
 exports.login = login;
 exports.newPost = newPost;
 exports.sendMessageToUser = sendMessageToUser;
 exports.signup = signup;
+exports.getAllUsers = getAllUsers;
+exports.getUser = getUser;
