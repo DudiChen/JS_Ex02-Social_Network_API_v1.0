@@ -34,23 +34,34 @@ let allowed = true;
 //     }
 // ]
 
-const login = (req, res, next) => {
+const login = async (req, res, next) => {
     console.log('POST request in user.login');
     const { email, password } = req.body;
 
     // if(DUMY_USERS.find(user => user.email === email && user.password === password)) {
     //     auth = true;
     // }
-
-    if(dataManager.getData("users").find(user => user.email === email && user.password === password)) {
-            auth = true;
-    }
+    let existingUser;
+    existingUser = dataManager.getData("users").find(user => user.email === email)
     
 
-    if(!auth) {
-        return next(new HttpError("user not authorized", 401));
+    if(!existingUser) {
+        return next(new HttpError("wrong credentials", 401));
     }
-    res.json({auth: "true"});
+
+    try {
+        auth = await bcrypt.compare(password, existingUser.password)
+    }
+    catch {
+        return next(new HttpError("could not login. please try again", 500));
+    }
+    
+    if(auth) {
+        res.json({userId: existingUser.id});
+    }
+    else {
+        return next(new HttpError("wrong credentials", 401));
+    }
 }
 
 const signup = async (req, res, next) => {
