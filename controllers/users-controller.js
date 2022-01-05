@@ -138,9 +138,20 @@ const getUser = (req, res, next) => {
 }
 
 
+const getAllMessages = (req, res, next) => {
+    console.log('GET getAllMessages');
+    const { id } = req.body;
+
+    const userMessagesData = dataManager.getData("messages").filter((message) => message.to === id);
+    // TODO: remove line:
+    console.log(userMessagesData);
+    res.json(userMessagesData);
+}
+
 exports.login = login;
 exports.newPost = newPost;
 exports.sendMessageToUser = sendMessageToUser;
 exports.signup = signup;
 exports.getAllUsers = getAllUsers;
 exports.getUser = getUser;
+exports.getAllMessages = getAllMessages;
