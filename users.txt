@@ -1,1 +1,1 @@
-[{ "id": 0, "email": "admin","password": "admin","fullName":"admin","creationDate":"Tue Jan 01 2022","status":"created"}]
+[{"id":0,"email":"admin","password":"admin","fullName":"admin","creationDate":"Tue Jan 01 2022","status":"created"},{"id":1,"email":"dudi@lama.mama","password":"$2a$12$C5ljlCi1PUkuNdRjsy/Vs.yDeE8sKEbCsVp9eYUY3VzbUp5HgR0B.","fullName":"Dudi Sababalo","creationDate":"Wed Jan 05 2022","status":"created"}]

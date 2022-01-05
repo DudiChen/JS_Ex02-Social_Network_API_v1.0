@@ -8,20 +8,42 @@ const getAllUsers = (req, res, next) => {
     res.json(users);
 }
 
+const getAllPendingUsers = (req, res, next) => {
+    console.log('GET getAllUsers');
+
+    const users = dataManager.getData("users").filter(user => user.status === "created");
+    res.json(users);
+}
+
+const getUser = (req, res, next) => {
+    console.log('GET getAllUsers');
+
+    const userId = req.body.id;
+    const users = dataManager.getData("users");
+    const selectedUser = users.filter(user => user.id === userId)[0];
+
+    if(selectedUser) {
+        res.json(selectedUser);
+    }
+    else {
+        return next(new HttpError(`user id ${userId} not found`, 400));
+    }
+}
+
 const approveJoinRequest = (req, res, next) => {
-    console.log('POST approveJoinRequest');
-    const { email, password, fullName } = req.body;
-
-    dataManager.saveData("users", 
-    {
-        email: email, 
-        password: password, 
-        fullName: fullName, 
-        creationDate: (new Date()).toDateString(), 
-        status: "created"
-    })
-
-    res.json({Message: "Created new user id: TBD"});
+    console.log('POST suspending user');
+    
+    const userId = req.body.id;
+    const users = dataManager.getData("users");
+    const selectedUser = users.filter(user => user.id === userId);
+    
+    if(selectedUser && selectedUser[0].status == "created") {
+        dataManager.updateData("users", userId, "status", "active")
+        res.json({Message: `user id: ${userId} approved`});
+    }
+    else {
+        return next(new HttpError(`cannot approve user ${userId}.`, 400));
+    }
 }
 
 const suspendUser = (req, res, next) => {
@@ -76,3 +98,5 @@ exports.suspendUser = suspendUser;
 exports.deleteUser = deleteUser;
 exports.restoreSuspendedUser = restoreSuspendedUser;
 exports.sendMessageToAllUsers = sendMessageToAllUsers;
+exports.getAllPendingUsers = getAllPendingUsers;
+exports.getUser = getUser
