@@ -80,8 +80,28 @@ const updateData = (db_name, id, key, value) => {
     })
 }
 
+const init = () => {
+    saveData("users", 
+    {
+        email: "admin", 
+        password: "admin", 
+        fullName: "admin", 
+        creationDate: (new Date()).toDateString(), 
+        status: "active"
+    })
+}
+
+const adminExists = () => {
+    const users = getData("users");
+    console.log("allUsers: " + users[0]);
+    console.log("adminExists returned value: " + users[0] != null && users[0].email === "admin");
+    return users[0] && users[0].email === "admin";
+}
+
 exports.dbNames = DB_NAMES_DIC;
 exports.saveData = saveData;
 exports.getData = getData;
 exports.deleteData = deleteData;
 exports.updateData = updateData;
+exports.adminExists = adminExists
+exports.init = init;
